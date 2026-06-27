@@ -1,105 +1,67 @@
 -- ============================================================
--- Modulyn Space — Migration 003: Storage Buckets
+-- Modulyn Space — Migration 003: Storage Buckets & Policies
 -- Run AFTER 002_rls_policies.sql
 -- ============================================================
 
--- Create storage buckets
--- public = true means files are publicly accessible via URL (no signed URLs needed)
-
+-- ============================================================
+-- CREATE BUCKETS
+-- public = TRUE → objects accessible via public URL (no signed URLs)
+-- file_size_limit is in bytes
+-- ============================================================
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES
-  ('projects', 'projects', TRUE,  10485760, ARRAY['image/jpeg','image/png','image/webp','image/avif']),
-  ('products',  'products', TRUE,  10485760, ARRAY['image/jpeg','image/png','image/webp','image/avif']),
-  ('team',      'team',     TRUE,  5242880,  ARRAY['image/jpeg','image/png','image/webp']),
-  ('media',     'media',    TRUE,  52428800, ARRAY['image/jpeg','image/png','image/webp','image/avif','image/gif','video/mp4']),
-  ('brands',    'brands',   TRUE,  5242880,  ARRAY['image/jpeg','image/png','image/webp','image/svg+xml'])
+  ('projects', 'projects', TRUE, 10485760,  -- 10 MB
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/avif']),
+  ('products',  'products', TRUE, 10485760,  -- 10 MB
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/avif']),
+  ('team',      'team',     TRUE,  5242880,  -- 5 MB
+    ARRAY['image/jpeg', 'image/png', 'image/webp']),
+  ('media',     'media',    TRUE, 52428800,  -- 50 MB
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif', 'video/mp4']),
+  ('brands',    'brands',   TRUE,  5242880,  -- 5 MB
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'])
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================
--- STORAGE RLS POLICIES
+-- STORAGE OBJECT POLICIES
+-- Consolidated to one policy per operation across all buckets —
+-- cleaner than 20 individual bucket policies.
 -- ============================================================
 
--- PROJECTS bucket
-CREATE POLICY "Public can read project images"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'projects');
+-- All five buckets are publicly readable (no auth required)
+CREATE POLICY "storage_public_read"
+  ON storage.objects
+  FOR SELECT
+  USING (bucket_id IN ('projects', 'products', 'team', 'media', 'brands'));
 
-CREATE POLICY "Admin can upload project images"
-  ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'projects' AND public.is_admin_or_editor());
+-- Only admin/editor users can upload new files
+CREATE POLICY "storage_admin_insert"
+  ON storage.objects
+  FOR INSERT
+  WITH CHECK (
+    bucket_id IN ('projects', 'products', 'team', 'media', 'brands')
+    AND public.is_admin_or_editor()
+  );
 
-CREATE POLICY "Admin can update project images"
-  ON storage.objects FOR UPDATE
-  USING (bucket_id = 'projects' AND public.is_admin_or_editor());
+-- Only admin/editor users can replace / rename files
+-- WITH CHECK ensures objects cannot be moved to a different bucket
+CREATE POLICY "storage_admin_update"
+  ON storage.objects
+  FOR UPDATE
+  USING (
+    bucket_id IN ('projects', 'products', 'team', 'media', 'brands')
+    AND public.is_admin_or_editor()
+  )
+  WITH CHECK (
+    bucket_id IN ('projects', 'products', 'team', 'media', 'brands')
+    AND public.is_admin_or_editor()
+  );
 
-CREATE POLICY "Admin can delete project images"
-  ON storage.objects FOR DELETE
-  USING (bucket_id = 'projects' AND public.is_admin_or_editor());
-
--- PRODUCTS bucket
-CREATE POLICY "Public can read product images"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'products');
-
-CREATE POLICY "Admin can upload product images"
-  ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'products' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can update product images"
-  ON storage.objects FOR UPDATE
-  USING (bucket_id = 'products' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can delete product images"
-  ON storage.objects FOR DELETE
-  USING (bucket_id = 'products' AND public.is_admin_or_editor());
-
--- TEAM bucket
-CREATE POLICY "Public can read team images"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'team');
-
-CREATE POLICY "Admin can upload team images"
-  ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'team' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can update team images"
-  ON storage.objects FOR UPDATE
-  USING (bucket_id = 'team' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can delete team images"
-  ON storage.objects FOR DELETE
-  USING (bucket_id = 'team' AND public.is_admin_or_editor());
-
--- MEDIA bucket
-CREATE POLICY "Public can read media files"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'media');
-
-CREATE POLICY "Admin can upload media files"
-  ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'media' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can update media files"
-  ON storage.objects FOR UPDATE
-  USING (bucket_id = 'media' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can delete media files"
-  ON storage.objects FOR DELETE
-  USING (bucket_id = 'media' AND public.is_admin_or_editor());
-
--- BRANDS bucket
-CREATE POLICY "Public can read brand logos"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'brands');
-
-CREATE POLICY "Admin can upload brand logos"
-  ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'brands' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can update brand logos"
-  ON storage.objects FOR UPDATE
-  USING (bucket_id = 'brands' AND public.is_admin_or_editor());
-
-CREATE POLICY "Admin can delete brand logos"
-  ON storage.objects FOR DELETE
-  USING (bucket_id = 'brands' AND public.is_admin_or_editor());
+-- Only admin/editor users can delete files
+CREATE POLICY "storage_admin_delete"
+  ON storage.objects
+  FOR DELETE
+  USING (
+    bucket_id IN ('projects', 'products', 'team', 'media', 'brands')
+    AND public.is_admin_or_editor()
+  );
