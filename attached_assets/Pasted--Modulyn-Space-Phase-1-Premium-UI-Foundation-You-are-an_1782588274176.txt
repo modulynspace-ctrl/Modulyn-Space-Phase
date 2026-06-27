@@ -1,0 +1,504 @@
+# Modulyn Space – Phase 1: Premium UI Foundation
+
+You are an award-winning creative director, senior UI/UX designer, and senior frontend architect.
+
+Do NOT generate a generic interior design website.
+
+Create a luxury digital experience that feels comparable to premium architecture studios and modern luxury brands.
+
+The feeling should be:
+
+* Apple
+* Lexus
+* Architecture Magazine
+* Minimal Luxury
+* Editorial Design
+
+The website must immediately communicate:
+
+"These people build premium interiors with transparency, craftsmanship, and timeless quality."
+
+---
+
+## Technology
+
+Create the project using:
+
+* React
+* Vite
+* TypeScript
+* Tailwind CSS
+
+Use clean architecture with reusable components.
+
+Do NOT create backend functionality.
+
+Do NOT connect any database.
+
+Do NOT create authentication.
+
+Use placeholder data where required.
+
+---
+
+## Overall Design Language
+
+The design must feel:
+
+Minimal
+
+Elegant
+
+Premium
+
+Timeless
+
+Architectural
+
+Editorial
+
+Never use bright gradients.
+
+Never use flashy colors.
+
+Never create a template-looking website.
+
+Use large whitespace.
+
+Use beautiful typography.
+
+Use smooth spacing.
+
+Use large premium imagery placeholders.
+
+---
+
+## Brand Colors
+
+Primary Background:
+Pure White
+
+Primary Text:
+Premium Black
+
+Secondary:
+Light Warm Gray
+
+Accent:
+Bronze / Champagne Gold inspired by the company logo.
+
+Buttons should be elegant.
+
+Rounded corners should be subtle.
+
+Shadows should be soft.
+
+---
+
+## Typography
+
+Heading Font
+
+Playfair Display
+
+Body Font
+
+Poppins
+
+Very large hero typography.
+
+Editorial spacing.
+
+---
+
+## Navigation
+
+Sticky Navbar
+
+Transparent on hero.
+
+Turns white after scrolling.
+
+Menu:
+
+Home
+
+Projects
+
+Our Story
+
+Contact
+
+Modulyn Store
+
+Book Consultation button.
+
+Desktop + Mobile.
+
+Luxury mobile menu animation.
+
+---
+
+## Loading Experience
+
+Create a premium loading screen.
+
+Use the Modulyn Space logo.
+
+Fade into the homepage elegantly.
+
+---
+
+## Cursor
+
+Create elegant hover interactions.
+
+Buttons should slightly lift.
+
+Cards should respond naturally.
+
+Avoid gimmicks.
+
+---
+
+## Animations
+
+Use Framer Motion.
+
+Every section should reveal while scrolling.
+
+Images fade.
+
+Text slides upward.
+
+Cards slightly scale.
+
+Very smooth.
+
+No excessive animation.
+
+Everything should feel calm.
+
+---
+
+## Homepage
+
+Build the following sections exactly.
+
+1.
+
+Full Screen Hero
+
+Large luxury image placeholder.
+
+Dark overlay.
+
+Headline:
+
+Designing Spaces That Feel Like Home. Crafted To Last.
+
+Subheading describing premium interiors.
+
+Primary Button:
+
+Book Free Consultation
+
+Secondary Button:
+
+Explore Projects
+
+Trust badges:
+
+Founded 2025
+
+Completed Projects
+
+Serving Karnataka
+
+Transparent Pricing
+
+---
+
+2.
+
+Message to Every Homeowner
+
+Luxury editorial layout.
+
+Large spacing.
+
+Elegant typography.
+
+---
+
+3.
+
+Who We Are
+
+Split layout.
+
+Image placeholder.
+
+Professional introduction.
+
+---
+
+4.
+
+Services
+
+Beautiful premium cards.
+
+Home Interiors
+
+Modular Kitchens
+
+Wardrobes
+
+Turnkey Projects
+
+Renovation
+
+Commercial
+
+Furniture
+
+False Ceiling
+
+Electrical
+
+Landscape
+
+Hover animation.
+
+---
+
+5.
+
+Why Choose Modulyn
+
+Luxury icon cards.
+
+---
+
+6.
+
+The Modulyn Difference
+
+Large typography section.
+
+Minimal.
+
+---
+
+7.
+
+Our Process
+
+Elegant horizontal timeline.
+
+---
+
+8.
+
+Featured Project
+
+Large showcase.
+
+Project image placeholder.
+
+Description.
+
+CTA.
+
+---
+
+9.
+
+Material Brands
+
+Create premium logo strip.
+
+Placeholder logos.
+
+---
+
+10.
+
+Testimonials
+
+Luxury cards.
+
+---
+
+11.
+
+FAQ
+
+Elegant accordion.
+
+---
+
+12.
+
+Luxury CTA
+
+Let's Build Something Exceptional Together.
+
+---
+
+Projects Page
+
+Create a luxury portfolio.
+
+Large hero.
+
+Grid layout.
+
+Project cards.
+
+Each card opens a beautiful project detail page.
+
+Project detail page includes:
+
+Hero Image
+
+Gallery
+
+Before vs After comparison placeholder
+
+Project Details
+
+Timeline
+
+Materials
+
+Outcome
+
+---
+
+Our Story
+
+Editorial layout.
+
+Founder section.
+
+Mission.
+
+Vision.
+
+Core Values.
+
+Luxury typography.
+
+---
+
+Contact
+
+Large Google Maps placeholder.
+
+Luxury contact form.
+
+Business information.
+
+Consultation section.
+
+Timeline explaining what happens next.
+
+---
+
+Store
+
+Luxury furniture catalogue.
+
+Grid layout.
+
+Product cards.
+
+Request Quote button.
+
+Premium filtering UI.
+
+---
+
+Footer
+
+Luxury footer.
+
+Quick links.
+
+Services.
+
+Contact.
+
+Social icons.
+
+Minimal.
+
+---
+
+Responsive Design
+
+Desktop first.
+
+Tablet.
+
+Mobile.
+
+Perfect spacing.
+
+No broken layouts.
+
+---
+
+Performance
+
+Use lazy loading where appropriate.
+
+Component-based architecture.
+
+Clean code.
+
+No duplicated code.
+
+---
+
+Accessibility
+
+Proper heading hierarchy.
+
+Keyboard accessible navigation.
+
+Good contrast.
+
+Semantic HTML.
+
+---
+
+SEO Foundation
+
+Create proper page titles.
+
+Meta descriptions.
+
+Open Graph placeholders.
+
+Clean URLs.
+
+---
+
+Important
+
+Do NOT create backend.
+
+Do NOT create login.
+
+Do NOT create admin dashboard.
+
+Do NOT connect database.
+
+Focus only on building the premium frontend experience.
+
+Everything should feel like it was designed by a world-class digital agency, not generated by AI.
+
+The final result should make visitors immediately trust Modulyn Space as a premium interior design studio.

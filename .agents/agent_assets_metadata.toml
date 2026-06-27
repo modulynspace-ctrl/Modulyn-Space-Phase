@@ -1,0 +1,56 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "8btkriCh_f3Lu2KQWDTTT"
+uri = "file://attached_assets/hero-living-room.png"
+type = "image"
+title = "luxury modern living room"
+
+[[generated]]
+id = "Jewfo80APD9wtyu4Osxkr"
+uri = "file://attached_assets/project-kitchen.png"
+type = "image"
+title = "premium modular kitchen"
+
+[[generated]]
+id = "qGrMVL1Rjyg9MAQGU2tZw"
+uri = "file://attached_assets/project-bedroom.png"
+type = "image"
+title = "luxury master bedroom"
+
+[[generated]]
+id = "CeZ9DFKdNibSdNUXSy-bM"
+uri = "file://attached_assets/project-office.png"
+type = "image"
+title = "elegant home office"
+
+[[generated]]
+id = "nkQCZ3wl9_YSoxGQF4l4k"
+uri = "file://attached_assets/project-dining.png"
+type = "image"
+title = "luxury dining room"
+
+[[generated]]
+id = "j3sKzCtjtuJb3wrxRFhZl"
+uri = "file://attached_assets/product-sofa.png"
+type = "image"
+title = "luxury sofa product"
+
+[[generated]]
+id = "KoGXDtIxXYAJ9VecFkAtO"
+uri = "file://attached_assets/product-chair.png"
+type = "image"
+title = "luxury dining chair"
+
+[[generated]]
+id = "ap5oAM_l1kOL2Kat_5Q2V"
+uri = "file://attached_assets/product-wardrobe.png"
+type = "image"
+title = "modern wardrobe product"
+
+[[generated]]
+id = "CYVreY8-lbInYlcknsQGA"
+uri = "file://attached_assets/project-featured.png"
+type = "image"
+title = "flagship project showcase"
