@@ -11,6 +11,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import { useSupabaseStatus } from "@/lib/useSupabaseStatus";
 
 const Projects = lazy(() => import("@/pages/Projects"));
 const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
@@ -45,6 +46,7 @@ function Router() {
 }
 
 function App() {
+  useSupabaseStatus();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -44,19 +44,38 @@ export const supabase = createClient(
  */
 export async function verifySupabaseConnection(): Promise<boolean> {
   try {
-    // A simple ping — selecting 0 rows from a system view is always safe
-    const { error } = await supabase.from("_supabase_health_check_ping").select("*").limit(0);
+    // Ping a non-existent table — PostgREST returns a structured error response
+    // which still proves the client can reach the Supabase project endpoint.
+    const { error } = await supabase.from("_ping").select("*").limit(0);
 
-    // A "relation does not exist" error still means the connection is alive
-    if (error && error.code !== "42P01" && error.code !== "PGRST116") {
-      console.error("[Supabase] Connection error:", error.message);
-      return false;
+    if (!error) {
+      // No error at all — connected and table exists
+      console.info("[Supabase] ✓ Connected to Supabase successfully.");
+      return true;
     }
 
-    console.info("[Supabase] Connection verified successfully.");
-    return true;
+    // These error codes all mean "we reached Supabase but the table doesn't exist yet"
+    // — which is perfectly expected before any tables are created.
+    const reachableCodes = [
+      "42P01",    // PostgreSQL: relation does not exist
+      "PGRST116", // PostgREST: table not found
+      "PGRST200", // PostgREST: no relationships found
+    ];
+    const reachableMessages = ["Invalid path specified", "relation", "does not exist"];
+
+    const isReachable =
+      reachableCodes.includes(error.code ?? "") ||
+      reachableMessages.some((msg) => error.message?.includes(msg));
+
+    if (isReachable) {
+      console.info("[Supabase] ✓ Connected to Supabase successfully. (No tables created yet — that's expected at this stage.)");
+      return true;
+    }
+
+    console.error("[Supabase] ✗ Connection error:", error.message);
+    return false;
   } catch (err) {
-    console.error("[Supabase] Unexpected error during connection check:", err);
+    console.error("[Supabase] ✗ Unexpected error during connection check:", err);
     return false;
   }
 }
