@@ -10,6 +10,7 @@ import Home from "@/pages/Home";
 import LoadingScreen from "@/components/LoadingScreen";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const Projects = lazy(() => import("@/pages/Projects"));
 const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
@@ -68,6 +69,7 @@ function App() {
               className="flex flex-col min-h-screen"
             >
               <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                <ScrollToTop />
                 <Navbar />
                 <main className="flex-1 w-full">
                   <Router />
