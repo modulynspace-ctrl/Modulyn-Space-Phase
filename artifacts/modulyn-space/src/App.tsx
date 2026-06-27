@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +19,8 @@ const Story = lazy(() => import("@/pages/Story"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const Store = lazy(() => import("@/pages/Store"));
 
+const AdminApp = lazy(() => import("@/admin/AdminApp"));
+
 const queryClient = new QueryClient();
 
 function PageLoader() {
@@ -29,7 +31,7 @@ function PageLoader() {
   );
 }
 
-function Router() {
+function PublicRouter() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
@@ -45,8 +47,9 @@ function Router() {
   );
 }
 
-function App() {
-  useSupabaseStatus();
+function AppInner() {
+  const [location] = useLocation();
+  const isAdmin = location.startsWith("/admin");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,31 +59,50 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  if (isAdmin) {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-white flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      }>
+        <AdminApp />
+      </Suspense>
+    );
+  }
+
+  return (
+    <AnimatePresence mode="wait">
+      {loading ? (
+        <LoadingScreen key="loading-screen" />
+      ) : (
+        <motion.div
+          key="main-content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col min-h-screen"
+        >
+          <ScrollToTop />
+          <Navbar />
+          <main className="flex-1 w-full">
+            <PublicRouter />
+          </main>
+          <Footer />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  useSupabaseStatus();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <AnimatePresence mode="wait">
-          {loading ? (
-            <LoadingScreen key="loading-screen" />
-          ) : (
-            <motion.div
-              key="main-content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col min-h-screen"
-            >
-              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-                <ScrollToTop />
-                <Navbar />
-                <main className="flex-1 w-full">
-                  <Router />
-                </main>
-                <Footer />
-              </WouterRouter>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <AppInner />
+        </WouterRouter>
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
