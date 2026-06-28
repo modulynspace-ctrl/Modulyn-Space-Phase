@@ -11,8 +11,15 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+const rawSupabaseUrl    = import.meta.env.VITE_SUPABASE_URL    as string | undefined;
+const rawSupabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
+// Normalise: strip surrounding whitespace and any trailing slashes.
+// Supabase appends paths like /auth/v1/token — a trailing slash on the base URL
+// produces a double-slash (e.g. https://x.supabase.co//auth/v1/token) which
+// GoTrue rejects with "Invalid path specified in request URL".
+const supabaseUrl    = rawSupabaseUrl?.trim().replace(/\/+$/, "");
+const supabaseAnonKey = rawSupabaseAnonKey?.trim();
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
