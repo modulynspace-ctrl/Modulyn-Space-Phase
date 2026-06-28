@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
   duration_months   INTEGER,
   budget_range      TEXT,
   client_name       TEXT,
-  status            TEXT        NOT NULL DEFAULT 'planning'
-                               CHECK (status IN ('planning', 'in_progress', 'completed')),
+  status            TEXT        NOT NULL DEFAULT 'draft'
+                               CHECK (status IN ('draft', 'planning', 'in_progress', 'completed', 'archived')),
   featured          BOOLEAN     NOT NULL DEFAULT FALSE,
   sort_order        INTEGER     NOT NULL DEFAULT 0,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -126,7 +126,10 @@ CREATE TABLE IF NOT EXISTS public.contact_requests (
   project_type TEXT,
   message      TEXT,
   status       TEXT        NOT NULL DEFAULT 'new'
-                           CHECK (status IN ('new', 'replied', 'closed')),
+                           CHECK (status IN (
+                             'new', 'contacted', 'site_visit_scheduled',
+                             'proposal_sent', 'work_started', 'completed', 'closed'
+                           )),
   notes        TEXT,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
