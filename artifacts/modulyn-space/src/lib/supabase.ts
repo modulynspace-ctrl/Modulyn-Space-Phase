@@ -21,45 +21,12 @@ const rawSupabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | un
 const supabaseUrl    = rawSupabaseUrl?.trim().replace(/\/+$/, "");
 const supabaseAnonKey = rawSupabaseAnonKey?.trim();
 
-// ── DIAGNOSTIC BLOCK (remove after root cause identified) ─────────────────────
-{
-  const maskedUrl = supabaseUrl
-    ? supabaseUrl.replace(/^(https:\/\/[^.]{0,4})[^/]*/, "$1***")
-    : "(undefined)";
-  console.info("[Supabase:diag] VITE_SUPABASE_URL     →", maskedUrl, "| raw length:", rawSupabaseUrl?.length ?? 0, "| normalised length:", supabaseUrl?.length ?? 0);
-  console.info("[Supabase:diag] VITE_SUPABASE_ANON_KEY →", rawSupabaseAnonKey ? `loaded (length ${rawSupabaseAnonKey.length}, starts: ${rawSupabaseAnonKey.slice(0,10)}...)` : "(undefined)");
-  console.info("[Supabase:diag] supabase.ts module evaluated — client instance #1");
-}
-// ─────────────────────────────────────────────────────────────────────────────
-
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
     "[Supabase] Missing environment variables.\n" +
     "Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your Replit Secrets."
   );
 }
-
-// ── DIAGNOSTIC fetch interceptor (remove after root cause identified) ─────────
-// Wraps every HTTP request made by the Supabase client so we can see
-// exactly what URL is called, what status comes back, and if fetch throws.
-const _diagnosticFetch: typeof fetch = async (input, init) => {
-  const url = typeof input === "string"
-    ? input
-    : input instanceof URL
-      ? input.href
-      : (input as Request).url;
-  const method = init?.method ?? (input instanceof Request ? input.method : "GET");
-  console.info("[Supabase:net] →", method, url);
-  try {
-    const response = await globalThis.fetch(input, init);
-    console.info("[Supabase:net] ←", response.status, response.statusText || "(no statusText)", url);
-    return response;
-  } catch (err) {
-    console.error("[Supabase:net] ✗ fetch THREW (no HTTP response received):", err);
-    throw err;
-  }
-};
-// ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * The shared Supabase client.
@@ -71,8 +38,7 @@ const _diagnosticFetch: typeof fetch = async (input, init) => {
  */
 export const supabase = createClient(
   supabaseUrl ?? "",
-  supabaseAnonKey ?? "",
-  { global: { fetch: _diagnosticFetch } }
+  supabaseAnonKey ?? ""
 );
 
 /**
