@@ -30,6 +30,9 @@ import heroImg from "@assets/hero-living-room.png";
 import splitImg from "@assets/project-dining.png";
 import featuredImg from "@assets/project-featured.png";
 import { supabase } from "@/lib/supabase";
+import { fetchPublicTestimonials, Testimonial } from "@/lib/testimonialsApi";
+import { fetchPublicFAQs, FAQ } from "@/lib/faqsApi";
+import { fetchPublicBrands, Brand } from "@/lib/brandsApi";
 
 interface FeaturedProject {
   title: string;
@@ -46,9 +49,18 @@ const fadeUp = {
 
 export default function Home() {
   const [featuredProject, setFeaturedProject] = useState<FeaturedProject | null>(null);
+  const [testimonials,   setTestimonials]   = useState<Testimonial[]>([]);
+  const [faqs,           setFaqs]           = useState<FAQ[]>([]);
+  const [brands,         setBrands]         = useState<Brand[]>([]);
 
   useEffect(() => {
     document.title = "Modulyn Space | Premium Interior Design in Karnataka";
+  }, []);
+
+  useEffect(() => {
+    fetchPublicTestimonials().then(({ data }) => setTestimonials(data));
+    fetchPublicFAQs().then(({ data }) => setFaqs(data));
+    fetchPublicBrands().then(({ data }) => setBrands(data));
   }, []);
 
   useEffect(() => {
@@ -373,104 +385,102 @@ export default function Home() {
       </section>
 
       {/* 9. Material Brands */}
-      <section className="py-20 border-b border-border bg-background overflow-hidden">
-        <div className="container mx-auto px-6 mb-10">
-          <h3 className="text-center text-sm font-medium tracking-widest text-muted-foreground uppercase">Trusted Brand Partners</h3>
-        </div>
-        <div className="flex w-full">
-          <motion.div 
-            className="flex gap-16 items-center px-8 whitespace-nowrap"
-            animate={{ x: [0, -1000] }}
-            transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
-          >
-            {/* Duplicate list for seamless loop */}
-            {[...Array(2)].map((_, i) => (
-              <React.Fragment key={i}>
-                {["Kajaria", "Asian Paints", "Hettich", "Sleek", "Greenlam", "Kohler", "Hafele", "Saint-Gobain"].map((brand) => (
-                  <div key={brand} className="text-2xl font-serif text-muted-foreground/40 font-bold opacity-50 hover:opacity-100 transition-opacity">
-                    {brand}
-                  </div>
-                ))}
-              </React.Fragment>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      {brands.length > 0 && (
+        <section className="py-20 border-b border-border bg-background overflow-hidden">
+          <div className="container mx-auto px-6 mb-10">
+            <h3 className="text-center text-sm font-medium tracking-widest text-muted-foreground uppercase">Trusted Brand Partners</h3>
+          </div>
+          <div className="flex w-full">
+            <motion.div
+              className="flex gap-16 items-center px-8 whitespace-nowrap"
+              animate={{ x: [0, -1000] }}
+              transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
+            >
+              {[...brands, ...brands].map((brand, i) => (
+                <div key={`${brand.id}-${i}`} className="opacity-50 hover:opacity-100 transition-opacity">
+                  {brand.logo_url
+                    ? <img src={brand.logo_url} alt={brand.name} className="h-10 max-w-[120px] object-contain grayscale hover:grayscale-0 transition-all" />
+                    : <div className="text-2xl font-serif text-muted-foreground/40 font-bold">{brand.name}</div>}
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* 10. Testimonials */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif text-3xl md:text-4xl">Client Stories</h2>
-          </motion.div>
+      {testimonials.length > 0 && (
+        <section className="py-24 bg-background">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="text-center mb-16"
+            >
+              <h2 className="font-serif text-3xl md:text-4xl">Client Stories</h2>
+            </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { text: "The level of detail Modulyn brought to our apartment was extraordinary. They understood our aesthetic immediately and executed it flawlessly.", author: "Priya S.", location: "Whitefield" },
-              { text: "Professionalism from day one. The 3D designs matched the final outcome exactly. Their transparency regarding costs gave us immense peace of mind.", author: "Rahul M.", location: "Indiranagar" },
-              { text: "A truly premium experience. The quality of the woodwork and the attention to lighting has completely transformed how we live in our home.", author: "Anjali & Vikram", location: "Jayanagar" },
-            ].map((testimonial, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-secondary p-8 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex text-primary mb-6">
-                    {[...Array(5)].map((_, i) => <Gem key={i} size={16} fill="currentColor" className="mr-1" />)}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {testimonials.slice(0, 3).map((testimonial, idx) => (
+                <motion.div
+                  key={testimonial.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="bg-secondary p-8 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex text-primary mb-6">
+                      {[...Array(testimonial.rating)].map((_, i) => <Gem key={i} size={16} fill="currentColor" className="mr-1" />)}
+                    </div>
+                    <p className="text-foreground italic leading-relaxed mb-8">"{testimonial.content}"</p>
                   </div>
-                  <p className="text-foreground italic leading-relaxed mb-8">"{testimonial.text}"</p>
-                </div>
-                <div>
-                  <p className="font-medium text-sm">{testimonial.author}</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">{testimonial.location}</p>
-                </div>
-              </motion.div>
-            ))}
+                  <div>
+                    {testimonial.avatar_url && (
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-border mb-3">
+                        <img src={testimonial.avatar_url} alt={testimonial.client_name} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <p className="font-medium text-sm">{testimonial.client_name}</p>
+                    {testimonial.client_location && <p className="text-xs text-muted-foreground uppercase tracking-wider">{testimonial.client_location}</p>}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 11. FAQ */}
-      <section className="py-24 bg-secondary">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif text-3xl md:text-4xl mb-4">Frequently Asked Questions</h2>
-          </motion.div>
+      {faqs.length > 0 && (
+        <section className="py-24 bg-secondary">
+          <div className="container mx-auto px-6 max-w-3xl">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="text-center mb-16"
+            >
+              <h2 className="font-serif text-3xl md:text-4xl mb-4">Frequently Asked Questions</h2>
+            </motion.div>
 
-          <Accordion type="single" collapsible className="w-full">
-            {[
-              { q: "What is your typical project timeline?", a: "For a standard 3BHK home interior, our execution timeline is typically 45-60 days from the day of design sign-off. Larger bespoke villas may take 3-4 months." },
-              { q: "How do you handle pricing and budgets?", a: "We believe in 100% transparency. After the initial consultation, we provide a detailed Bill of Quantities (BOQ). There are no hidden charges." },
-              { q: "Do you manufacture your own furniture?", a: "Yes, we have our own state-of-the-art manufacturing facility to ensure precision, quality control, and timely delivery of all modular and custom furniture." },
-              { q: "Do you take up renovation projects?", a: "Yes, we undertake complete civil and interior renovation projects, handling everything from demolition to final styling." },
-              { q: "Is there a warranty on your interiors?", a: "Absolutely. We provide a 5-year comprehensive warranty on all woodwork and hardware, along with dedicated post-handover support." }
-            ].map((faq, idx) => (
-              <AccordionItem key={idx} value={`item-${idx}`} className="border-border/50">
-                <AccordionTrigger className="font-serif text-lg hover:text-primary transition-colors text-left">{faq.q}</AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed text-base">
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((faq, idx) => (
+                <AccordionItem key={faq.id} value={`item-${idx}`} className="border-border/50">
+                  <AccordionTrigger className="font-serif text-lg hover:text-primary transition-colors text-left">{faq.question}</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed text-base">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+      )}
 
       {/* 12. Luxury CTA Banner */}
       <section className="py-32 bg-foreground text-background text-center relative overflow-hidden">
