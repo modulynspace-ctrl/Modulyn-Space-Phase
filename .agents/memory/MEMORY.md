@@ -1,0 +1,2 @@
+- [Auth system design](auth-system.md) — Supabase Auth + public.users role table; AuthProvider in AdminApp, not App; login at /admin/login outside ProtectedRoute.
+- [Migration execution model](migration-model.md) — User runs all SQL manually via Supabase SQL Editor; no programmatic migration. Files in artifacts/modulyn-space/supabase/migrations/.

@@ -318,6 +318,37 @@ END;
 $$;
 
 -- ============================================================
+-- AUTH TRIGGER: auto-create public.users profile on auth signup
+-- Fires when an admin creates a user in Supabase Auth Dashboard.
+-- Sets role = 'viewer' by default; promote to 'admin'/'editor' via
+-- UPDATE public.users SET role = 'admin' WHERE id = '<uuid>';
+-- ============================================================
+CREATE OR REPLACE FUNCTION public.handle_new_auth_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.users (id, full_name, avatar_url, role)
+  VALUES (
+    NEW.id,
+    NEW.raw_user_meta_data->>'full_name',
+    NEW.raw_user_meta_data->>'avatar_url',
+    COALESCE(NEW.raw_user_meta_data->>'role', 'viewer')
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_on_auth_user_created ON auth.users;
+CREATE TRIGGER trg_on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_auth_user();
+
+-- ============================================================
 -- SEED: default homepage_settings row (singleton, safe to re-run)
 -- ============================================================
 INSERT INTO public.homepage_settings (
