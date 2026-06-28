@@ -146,6 +146,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = useCallback(
     async (email: string, password: string): Promise<{ error: string | null }> => {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
+      // ── DIAGNOSTIC (remove after root cause identified) ───────────────────
+      if (error) {
+        console.error("[Auth:diag] signInWithPassword FULL ERROR:", JSON.stringify({
+          name:    error.name,
+          message: error.message,
+          status:  error.status,
+          code:    (error as Record<string, unknown>).code,
+          details: (error as Record<string, unknown>).details,
+          hint:    (error as Record<string, unknown>).hint,
+          __isAuthError: (error as Record<string, unknown>).__isAuthError,
+        }, null, 2));
+      } else {
+        console.info("[Auth:diag] signInWithPassword SUCCESS");
+      }
+      // ─────────────────────────────────────────────────────────────────────
       if (error) {
         // Normalise common Supabase error messages
         if (error.message.toLowerCase().includes("invalid login")) {
