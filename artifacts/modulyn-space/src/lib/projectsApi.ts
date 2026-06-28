@@ -6,6 +6,7 @@ import {
   PUBLIC_STATUSES,
   extractStoragePath,
 } from "@/lib/projectTypes";
+import { registerInMediaLibrary } from "@/lib/mediaApi";
 
 // ── Column list ───────────────────────────────────────────────────────────────
 
@@ -193,6 +194,17 @@ export async function uploadProjectImage(
     .single();
 
   if (insertError) return { data: null, error: insertError.message };
+
+  // Register in Media Library (best-effort — ignored if it fails)
+  registerInMediaLibrary({
+    filename:      path,
+    original_name: file.name,
+    url:           publicUrl,
+    bucket:        "projects",
+    mime_type:     file.type || null,
+    size_bytes:    file.size || null,
+  });
+
   return { data: imgRow as ProjectImage, error: null };
 }
 
@@ -228,4 +240,47 @@ export async function updateImageOrder(images: ProjectImage[]): Promise<{
   const failed  = results.find((r) => r.error);
   if (failed?.error) return { error: failed.error.message };
   return { error: null };
+}
+
+/**
+ * Link an existing Media Library item to a project without re-uploading.
+ * Creates a project_images row pointing to the media item's URL.
+ */
+export async function linkMediaToProject(
+  projectId: string,
+  media: { url: string; alt_text?: string | null },
+  flags: UploadImageFlags
+): Promise<{ data: ProjectImage | null; error: string | null }> {
+  const isGallery = !flags.is_hero && !flags.is_before && !flags.is_after;
+  let sortOrder = 0;
+
+  if (isGallery) {
+    const { data: existing } = await supabase
+      .from("project_images")
+      .select("sort_order")
+      .eq("project_id", projectId)
+      .eq("is_hero",   false)
+      .eq("is_before", false)
+      .eq("is_after",  false)
+      .order("sort_order", { ascending: false })
+      .limit(1);
+    sortOrder = (existing?.[0]?.sort_order ?? -1) + 1;
+  }
+
+  const { data, error } = await supabase
+    .from("project_images")
+    .insert({
+      project_id: projectId,
+      url:        media.url,
+      alt_text:   media.alt_text ?? null,
+      is_hero:    flags.is_hero   ?? false,
+      is_before:  flags.is_before ?? false,
+      is_after:   flags.is_after  ?? false,
+      sort_order: sortOrder,
+    })
+    .select()
+    .single();
+
+  if (error) return { data: null, error: error.message };
+  return { data: data as ProjectImage, error: null };
 }

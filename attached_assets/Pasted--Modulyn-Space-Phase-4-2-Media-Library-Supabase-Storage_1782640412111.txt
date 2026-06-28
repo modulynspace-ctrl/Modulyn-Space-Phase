@@ -1,0 +1,137 @@
+# Modulyn Space - Phase 4.2: Media Library & Supabase Storage
+
+Continue the existing project.
+
+IMPORTANT:
+
+* Do NOT modify the public website.
+* Do NOT modify authentication.
+* Do NOT modify the admin layout.
+* Do NOT modify animations or styling.
+* Continue from the existing codebase.
+
+## Objective
+
+Build a centralized Media Library connected to Supabase Storage.
+
+This Media Library will be shared across Projects, Products, Team, Testimonials, Material Brands, Homepage, and Website Settings.
+
+## Storage Buckets
+
+Use the existing buckets:
+
+* projects
+* products
+* team
+* brands
+* media
+
+## Media Library Features
+
+Create a professional Media Library page.
+
+Display:
+
+* Image preview
+* File name
+* Bucket
+* Upload date
+* File size
+
+Add:
+
+* Search
+* Bucket filter
+* Pagination
+* Grid/List view toggle
+* Image preview modal
+
+## Upload
+
+Allow:
+
+* Drag & Drop
+* Click to Upload
+* Multiple uploads
+* Upload progress
+* File validation
+
+Allowed:
+
+* JPG
+* PNG
+* WEBP
+* AVIF
+
+Reject unsupported files.
+
+## Image Actions
+
+Allow:
+
+* Preview
+* Copy public URL
+* Delete
+* Rename metadata
+* Edit alt text
+
+## Integration
+
+Replace direct uploads in the Projects CMS.
+
+Instead of uploading every time:
+
+Add a "Choose From Media Library" option.
+
+Allow:
+
+* Select existing image
+* Upload new image
+* Reuse existing images
+
+Never duplicate files unnecessarily.
+
+## Database
+
+Store metadata in the existing `media_library` table.
+
+Keep Storage and Database synchronized.
+
+If an image is deleted:
+
+* Delete from Storage.
+* Delete metadata.
+
+## Performance
+
+* Lazy loading
+* Infinite scroll or pagination
+* Optimized image loading
+* Loading states
+* Error handling
+
+## Security
+
+Respect existing RLS policies.
+
+Only authenticated Admins and Editors can upload or delete.
+
+Viewers have read-only access.
+
+## Verification
+
+Verify:
+
+* Upload works
+* Delete works
+* Image selection works
+* Projects CMS works with Media Library
+* No TypeScript errors
+* No console errors
+
+At the end provide:
+
+* Files created
+* Files modified
+* Storage integration summary
+* Verification checklist
