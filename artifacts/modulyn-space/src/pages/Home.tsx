@@ -17,8 +17,6 @@ import {
   Briefcase, 
   Sofa, 
   LampCeiling, 
-  Zap, 
-  TreePine,
   ShieldCheck,
   Gem,
   Clock,
@@ -33,6 +31,7 @@ import { supabase } from "@/lib/supabase";
 import { fetchPublicTestimonials, Testimonial } from "@/lib/testimonialsApi";
 import { fetchPublicFAQs, FAQ } from "@/lib/faqsApi";
 import { fetchPublicBrands, Brand } from "@/lib/brandsApi";
+import { useSiteSettings } from "@/lib/siteSettingsContext";
 
 interface FeaturedProject {
   title: string;
@@ -48,6 +47,7 @@ const fadeUp = {
 };
 
 export default function Home() {
+  const { homepageSettings: hs, loading: settingsLoading } = useSiteSettings();
   const [featuredProject, setFeaturedProject] = useState<FeaturedProject | null>(null);
   const [testimonials,   setTestimonials]   = useState<Testimonial[]>([]);
   const [faqs,           setFaqs]           = useState<FAQ[]>([]);
@@ -64,9 +64,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (settingsLoading) return;
+
     const COLS = "title, slug, short_description, description, project_images(url, is_hero)";
 
     async function load() {
+      // 0. Homepage settings override
+      if (hs?.featured_project_id) {
+        const { data: specific } = await supabase
+          .from("projects")
+          .select(COLS)
+          .eq("id", hs.featured_project_id)
+          .maybeSingle();
+        if (specific) { setFeaturedProject(specific as FeaturedProject); return; }
+      }
+
       // 1. Try featured = true
       const { data: featured } = await supabase
         .from("projects")
@@ -88,18 +100,24 @@ export default function Home() {
         .maybeSingle();
 
       if (recent) setFeaturedProject(recent as FeaturedProject);
-      // 3. No result → leave null (placeholder renders)
     }
 
     load();
-  }, []);
+  }, [settingsLoading, hs?.featured_project_id]);
+
+  const heroHeadline  = hs?.hero_headline   ?? "Designing Spaces That Feel Like Home. Crafted To Last.";
+  const heroSubtitle  = hs?.hero_subheading ?? "Bespoke residential and commercial interiors in Karnataka. We bring transparency, unhurried craftsmanship, and timeless quality to every project.";
+  const heroImage     = hs?.hero_image_url  ?? heroImg;
+  const statsProjects = hs?.stats_projects_count ?? 200;
+  const statsClients  = hs?.stats_clients_count  ?? 150;
+  const statsYears    = hs?.stats_years          ?? 1;
 
   return (
     <div className="w-full">
       {/* 1. Full-Screen Hero */}
       <section className="relative h-[100dvh] w-full overflow-hidden">
         <img 
-          src={heroImg} 
+          src={heroImage} 
           alt="Luxury living room interior" 
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -112,12 +130,10 @@ export default function Home() {
             className="max-w-4xl"
           >
             <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-6">
-              Designing Spaces That Feel Like Home.<br/>
-              <span className="italic font-light">Crafted To Last.</span>
+              {heroHeadline}
             </h1>
             <p className="text-white/90 text-lg md:text-xl font-light max-w-2xl mx-auto mb-10">
-              Bespoke residential and commercial interiors in Karnataka. 
-              We bring transparency, unhurried craftsmanship, and timeless quality to every project.
+              {heroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto h-14 px-8 text-base">
@@ -137,11 +153,11 @@ export default function Home() {
         {/* Trust Badges */}
         <div className="absolute bottom-0 left-0 right-0 border-t border-white/20 bg-black/20 backdrop-blur-sm">
           <div className="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center text-white/80 text-xs md:text-sm font-medium tracking-wide gap-4">
-            <span>FOUNDED 2025</span>
+            <span>{statsYears}+ YEARS EXPERIENCE</span>
             <span className="hidden md:inline">•</span>
-            <span>200+ COMPLETED PROJECTS</span>
+            <span>{statsProjects}+ COMPLETED PROJECTS</span>
             <span className="hidden md:inline">•</span>
-            <span>SERVING KARNATAKA</span>
+            <span>{statsClients}+ HAPPY CLIENTS</span>
             <span className="hidden md:inline">•</span>
             <span>TRANSPARENT PRICING</span>
           </div>
@@ -321,7 +337,6 @@ export default function Home() {
           </motion.div>
 
           <div className="relative">
-            {/* Connecting Line */}
             <div className="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
             
             <div className="grid grid-cols-1 md:grid-cols-5 gap-8">

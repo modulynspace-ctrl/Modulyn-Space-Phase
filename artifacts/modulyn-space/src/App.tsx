@@ -12,6 +12,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useSupabaseStatus } from "@/lib/useSupabaseStatus";
+import { SiteSettingsProvider } from "@/lib/siteSettingsContext";
 
 const Projects = lazy(() => import("@/pages/Projects"));
 const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
@@ -72,26 +73,28 @@ function AppInner() {
   }
 
   return (
-    <AnimatePresence mode="wait">
-      {loading ? (
-        <LoadingScreen key="loading-screen" />
-      ) : (
-        <motion.div
-          key="main-content"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-col min-h-screen"
-        >
-          <ScrollToTop />
-          <Navbar />
-          <main className="flex-1 w-full">
-            <PublicRouter />
-          </main>
-          <Footer />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <SiteSettingsProvider>
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <LoadingScreen key="loading-screen" />
+        ) : (
+          <motion.div
+            key="main-content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col min-h-screen"
+          >
+            <ScrollToTop />
+            <Navbar />
+            <main className="flex-1 w-full">
+              <PublicRouter />
+            </main>
+            <Footer />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </SiteSettingsProvider>
   );
 }
 

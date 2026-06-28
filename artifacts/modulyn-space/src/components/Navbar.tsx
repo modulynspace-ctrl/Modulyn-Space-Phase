@@ -3,12 +3,15 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import ConsultationBookingModal from "@/components/ConsultationBookingModal";
+import { useSiteSettings } from "@/lib/siteSettingsContext";
 
 export default function Navbar() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled]         = React.useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [modalOpen, setModalOpen]           = React.useState(false);
+  const { websiteSettings } = useSiteSettings();
+  const siteName = websiteSettings.site_name ?? "Modulyn Space";
 
   React.useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -39,7 +42,7 @@ export default function Navbar() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBg}`}>
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="font-serif text-xl md:text-2xl tracking-widest uppercase z-50" data-testid="link-home-logo">
-            Modulyn Space
+            {siteName}
           </Link>
 
           {/* Desktop Nav */}

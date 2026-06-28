@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
+import { useSiteSettings } from "@/lib/siteSettingsContext";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -39,10 +40,17 @@ type SubmitStatus = "idle" | "loading" | "success" | "error";
 export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { websiteSettings } = useSiteSettings();
+
+  const phone          = websiteSettings.site_phone    ?? "+91 98765 43210";
+  const email          = websiteSettings.site_email    ?? "hello@modulynspace.com";
+  const address        = websiteSettings.site_address  ?? "123 Design Avenue, Bengaluru 560001";
+  const googleMapsUrl  = websiteSettings.google_maps_url ?? null;
+  const siteName       = websiteSettings.site_name     ?? "Modulyn Space";
 
   useEffect(() => {
-    document.title = "Contact | Modulyn Space";
-  }, []);
+    document.title = `Contact | ${siteName}`;
+  }, [siteName]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -123,17 +131,17 @@ export default function Contact() {
                   <div className="flex items-start gap-4">
                     <MapPin className="w-6 h-6 text-primary shrink-0" />
                     <div>
-                      <p className="font-medium text-foreground mb-1">Modulyn Space Studio</p>
-                      <p>123 Design Avenue, Sector 4<br />Bengaluru, Karnataka 560001</p>
+                      <p className="font-medium text-foreground mb-1">{siteName} Studio</p>
+                      <p>{address}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <Phone className="w-6 h-6 text-primary shrink-0" />
-                    <p>+91 98765 43210</p>
+                    <a href={`tel:${phone.replace(/\s/g, "")}`} className="hover:text-primary transition-colors">{phone}</a>
                   </div>
                   <div className="flex items-center gap-4">
                     <Mail className="w-6 h-6 text-primary shrink-0" />
-                    <p>hello@modulynspace.com</p>
+                    <a href={`mailto:${email}`} className="hover:text-primary transition-colors">{email}</a>
                   </div>
                   <div className="flex items-start gap-4">
                     <Clock className="w-6 h-6 text-primary shrink-0" />
@@ -351,16 +359,31 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Map placeholder */}
-      <section className="w-full h-96 bg-muted relative border-t border-border flex items-center justify-center">
-        <div className="absolute inset-0 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Bengaluru&zoom=12&size=1000x400&sensor=false')] bg-cover bg-center opacity-30 grayscale mix-blend-multiply pointer-events-none" />
-        <div className="relative z-10 flex flex-col items-center">
-          <div className="w-16 h-16 bg-background rounded-full shadow-lg flex items-center justify-center mb-4">
-            <MapPin className="w-8 h-8 text-primary" />
+      {/* Map */}
+      {googleMapsUrl ? (
+        <section className="w-full h-96 border-t border-border">
+          <iframe
+            src={googleMapsUrl}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Studio Location"
+          />
+        </section>
+      ) : (
+        <section className="w-full h-96 bg-muted relative border-t border-border flex items-center justify-center">
+          <div className="absolute inset-0 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Bengaluru&zoom=12&size=1000x400&sensor=false')] bg-cover bg-center opacity-30 grayscale mix-blend-multiply pointer-events-none" />
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="w-16 h-16 bg-background rounded-full shadow-lg flex items-center justify-center mb-4">
+              <MapPin className="w-8 h-8 text-primary" />
+            </div>
+            <p className="font-serif text-xl">{address.split(",").slice(-2).join(",").trim() || "Bengaluru, Karnataka"}</p>
           </div>
-          <p className="font-serif text-xl">Bengaluru, Karnataka</p>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
