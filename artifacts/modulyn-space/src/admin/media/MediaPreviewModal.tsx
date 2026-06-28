@@ -71,6 +71,7 @@ export default function MediaPreviewModal({ item, onClose, onDeleted, onUpdated 
   }
 
   function handleCopy() {
+    if (!item) return;
     navigator.clipboard.writeText(item.url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
