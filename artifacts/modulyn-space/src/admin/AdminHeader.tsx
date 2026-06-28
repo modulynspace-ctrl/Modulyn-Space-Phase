@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
-import { Search, Bell, Menu, ChevronDown, LogOut, User } from "lucide-react";
+import { Search, Menu, ChevronDown, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/AuthContext";
+import NotificationDropdown from "@/admin/components/NotificationDropdown";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -142,12 +143,7 @@ export default function AdminHeader({ onMenuClick }: HeaderProps) {
         </div>
 
         {/* Notifications */}
-        <button className="relative text-muted-foreground hover:text-foreground" aria-label="Notifications">
-          <Bell className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold flex items-center justify-center rounded-full">
-            3
-          </span>
-        </button>
+        <NotificationDropdown />
 
         <div className="w-px h-6 bg-border mx-1 hidden md:block" />
 
