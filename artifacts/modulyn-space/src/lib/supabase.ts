@@ -21,21 +21,6 @@ const rawSupabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | un
 const supabaseUrl    = rawSupabaseUrl?.trim().replace(/\/+$/, "");
 const supabaseAnonKey = rawSupabaseAnonKey?.trim();
 
-// ── DIAGNOSTIC (remove after debugging) ──────────────────────────────────────
-{
-  const u = rawSupabaseUrl ?? "";
-  const n = supabaseUrl ?? "";
-  console.info("[Supabase:diag] RAW   url defined:", !!u, "| length:", u.length,
-    "| ends_with_slash:", u.endsWith("/"),
-    "| path_after_host:", JSON.stringify(u.replace(/^https?:\/\/[^/]+/, "") || "(none)"),
-    "| last_5_chars:", JSON.stringify(u.slice(-5)));
-  console.info("[Supabase:diag] NORM  url defined:", !!n, "| length:", n.length,
-    "| path_after_host:", JSON.stringify(n.replace(/^https?:\/\/[^/]+/, "") || "(none)"),
-    "| last_5_chars:", JSON.stringify(n.slice(-5)));
-  console.info("[Supabase:diag] AUTH  endpoint will be:", JSON.stringify(n + "/auth/v1/token?grant_type=password"));
-  console.info("[Supabase:diag] REST  endpoint will be:", JSON.stringify(n + "/rest/v1/"));
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
