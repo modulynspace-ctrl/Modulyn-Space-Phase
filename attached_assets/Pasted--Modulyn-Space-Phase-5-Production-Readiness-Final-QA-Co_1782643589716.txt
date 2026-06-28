@@ -1,0 +1,136 @@
+# Modulyn Space - Phase 5: Production Readiness & Final QA
+
+Continue the existing project.
+
+IMPORTANT:
+Do NOT add new features.
+
+Your task is only to polish, optimize, fix, and prepare the application for production.
+
+## 1. Fix Existing Issues
+
+Fix all remaining TypeScript errors.
+
+Specifically resolve the existing Home.tsx Framer Motion `fadeUp` easing type errors.
+
+Ensure:
+
+* Zero TypeScript errors.
+* Zero ESLint errors (if configured).
+* Zero runtime console errors.
+
+## 2. Performance
+
+Optimize:
+
+* Lazy loading
+* Route-based code splitting
+* Image loading
+* Bundle size
+* React re-renders
+* Memoization where appropriate
+
+## 3. Accessibility
+
+Improve:
+
+* ARIA labels
+* Keyboard navigation
+* Focus states
+* Form accessibility
+* Image alt text fallbacks
+* Color contrast (without redesign)
+
+## 4. SEO
+
+Verify:
+
+* Page titles
+* Meta descriptions
+* Open Graph tags
+* Twitter cards
+* Canonical URLs
+* Sitemap generation
+* robots.txt
+* Structured data (Organization + LocalBusiness)
+
+## 5. Security
+
+Review:
+
+* Supabase usage
+* RLS assumptions
+* Environment variables
+* No exposed secrets
+* Input validation
+* XSS-safe rendering
+
+## 6. UX
+
+Verify:
+
+* Loading skeletons
+* Error boundaries
+* Empty states
+* Success/error toasts
+* Responsive behavior
+* Smooth transitions
+
+## 7. Code Quality
+
+* Remove dead code
+* Remove unused imports
+* Remove duplicate components
+* Remove duplicate queries
+* Improve folder organization where needed
+* Standardize naming
+
+## 8. Final Testing
+
+Verify every module:
+
+Public Website
+
+* Home
+* Projects
+* Project Details
+* Store
+* Contact
+* About
+
+Admin
+
+* Authentication
+* Dashboard
+* Projects
+* Media Library
+* Products
+* Services
+* Testimonials
+* FAQs
+* Team
+* Material Brands
+* Homepage Settings
+* Website Settings
+* Contact Requests
+* Consultation Bookings
+
+## 9. Deployment Readiness
+
+Prepare for production.
+
+Provide:
+
+* Environment variables required
+* Supabase configuration checklist
+* Build verification
+* Deployment checklist
+* Remaining optional improvements
+
+Do NOT redesign anything.
+
+Do NOT change layouts.
+
+Do NOT remove existing functionality.
+
+Only optimize, fix, verify, and prepare for production.

@@ -43,7 +43,7 @@ interface FeaturedProject {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } }
 };
 
 export default function Home() {
@@ -120,6 +120,7 @@ export default function Home() {
           src={heroImage} 
           alt="Luxury living room interior" 
           className="absolute inset-0 w-full h-full object-cover"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-6 container mx-auto">

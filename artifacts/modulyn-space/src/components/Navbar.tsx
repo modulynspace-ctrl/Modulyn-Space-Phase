@@ -51,6 +51,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={location === link.href ? "page" : undefined}
                 className={`text-sm font-medium tracking-wide transition-colors hover:text-primary ${
                   location === link.href ? "text-primary" : ""
                 }`}
@@ -96,6 +97,7 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    aria-current={location === link.href ? "page" : undefined}
                     className={`text-2xl font-serif transition-colors hover:text-primary ${
                       location === link.href ? "text-primary" : "text-foreground"
                     }`}
