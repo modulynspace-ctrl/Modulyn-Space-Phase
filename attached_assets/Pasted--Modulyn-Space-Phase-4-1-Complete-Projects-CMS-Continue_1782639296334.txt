@@ -1,0 +1,128 @@
+# Modulyn Space - Phase 4.1: Complete Projects CMS
+
+Continue the existing project.
+
+IMPORTANT:
+
+* Do NOT modify the public website.
+* Do NOT modify animations.
+* Do NOT modify authentication.
+* Do NOT modify the admin layout.
+* Continue from the existing codebase.
+
+## Objective
+
+Build a complete Projects Management System connected to Supabase.
+
+### Dashboard
+
+Replace the current placeholder Projects page with a fully functional CMS.
+
+### Features
+
+#### Project List
+
+Display:
+
+* Hero Image
+* Project Name
+* Category
+* Location
+* Status
+* Featured
+* Created Date
+
+Include:
+
+* Search
+* Category filter
+* Status filter
+* Pagination
+* Sorting by newest/oldest
+
+#### Add Project
+
+Fields:
+
+* Project Name
+* Slug (auto-generate from title)
+* Category
+* Short Description
+* Full Description
+* Location
+* Area (sq ft)
+* Duration
+* Budget Range
+* Client Name
+* Status (Draft / Planning / In Progress / Completed / Archived)
+* Featured (Yes/No)
+
+#### Images
+
+Connect to Supabase Storage.
+
+Allow:
+
+* Upload Hero Image
+* Upload Gallery Images
+* Upload Before Image
+* Upload After Image
+
+Images must:
+
+* Upload to the `projects` bucket.
+* Save metadata in `project_images`.
+* Show upload progress.
+* Show image preview.
+* Allow image deletion.
+* Allow image reordering by drag-and-drop.
+
+#### Edit Project
+
+Allow editing of every field and image.
+
+#### Delete Project
+
+Before deleting:
+
+* Show confirmation dialog.
+* Delete related project_images records.
+* Remove associated files from Supabase Storage.
+
+#### Validation
+
+Validate all required fields.
+
+Show:
+
+* Loading states
+* Success messages
+* Error messages
+
+#### Public Website
+
+Replace any placeholder Featured Project and Projects page data with live data from Supabase.
+
+Only display:
+
+* Projects with status:
+
+  * in_progress
+  * completed
+
+Draft, Planning, and Archived projects must never appear publicly.
+
+#### Performance
+
+* Lazy load images.
+* Cache project list.
+* No TypeScript errors.
+* No console errors.
+
+At the end provide:
+
+* Files created
+* Files modified
+* Database queries added
+* Storage integration summary
+* Verification checklist
