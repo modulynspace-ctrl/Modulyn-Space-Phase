@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,15 @@ import {
 import heroImg from "@assets/hero-living-room.png";
 import splitImg from "@assets/project-dining.png";
 import featuredImg from "@assets/project-featured.png";
+import { supabase } from "@/lib/supabase";
+
+interface FeaturedProject {
+  title: string;
+  slug: string;
+  short_description: string | null;
+  description: string | null;
+  project_images: Array<{ url: string; is_hero: boolean }>;
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -36,8 +45,41 @@ const fadeUp = {
 };
 
 export default function Home() {
+  const [featuredProject, setFeaturedProject] = useState<FeaturedProject | null>(null);
+
   useEffect(() => {
     document.title = "Modulyn Space | Premium Interior Design in Karnataka";
+  }, []);
+
+  useEffect(() => {
+    const COLS = "title, slug, short_description, description, project_images(url, is_hero)";
+
+    async function load() {
+      // 1. Try featured = true
+      const { data: featured } = await supabase
+        .from("projects")
+        .select(COLS)
+        .eq("featured", true)
+        .in("status", ["in_progress", "completed"])
+        .limit(1)
+        .maybeSingle();
+
+      if (featured) { setFeaturedProject(featured as FeaturedProject); return; }
+
+      // 2. Fallback: most recent completed
+      const { data: recent } = await supabase
+        .from("projects")
+        .select(COLS)
+        .eq("status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (recent) setFeaturedProject(recent as FeaturedProject);
+      // 3. No result → leave null (placeholder renders)
+    }
+
+    load();
   }, []);
 
   return (
@@ -302,9 +344,9 @@ export default function Home() {
 
       {/* 8. Featured Project */}
       <section className="relative h-[80vh] min-h-[600px] w-full overflow-hidden">
-        <img 
-          src={featuredImg} 
-          alt="Featured luxury project" 
+        <img
+          src={featuredProject?.project_images?.find((i) => i.is_hero)?.url ?? featuredImg}
+          alt="Featured luxury project"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -317,10 +359,14 @@ export default function Home() {
             className="max-w-2xl text-white"
           >
             <div className="mb-4 text-primary font-medium tracking-widest text-sm uppercase">Featured Project</div>
-            <h2 className="font-serif text-4xl md:text-5xl mb-4">The Koramangala Villa</h2>
-            <p className="text-white/80 text-lg mb-8 font-light">A masterclass in modern minimalism. 6,500 sq ft of meticulously detailed spaces harmonizing natural light, Italian marble, and bespoke walnut joinery.</p>
+            <h2 className="font-serif text-4xl md:text-5xl mb-4">
+              {featuredProject?.title ?? "The Koramangala Villa"}
+            </h2>
+            <p className="text-white/80 text-lg mb-8 font-light">
+              {featuredProject?.short_description ?? featuredProject?.description ?? "A masterclass in modern minimalism. 6,500 sq ft of meticulously detailed spaces harmonizing natural light, Italian marble, and bespoke walnut joinery."}
+            </p>
             <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none px-8">
-              <Link href="/projects/featured">View Project</Link>
+              <Link href={featuredProject ? `/projects/${featuredProject.slug}` : "/projects"}>View Project</Link>
             </Button>
           </motion.div>
         </div>
