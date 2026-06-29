@@ -81,50 +81,61 @@ export default function Navbar() {
         <div className="container mx-auto px-6">
 
           {/*
-           * ── MOBILE bar (< md) ─────────────────────────────────────────
+           * ── MOBILE / TABLET bar (< lg) ────────────────────────────────
            * Simple flex: brand on left, hamburger on right.
-           * No grid, no nav links visible.
+           * Shown below 1024px where there isn't enough room for the
+           * full 3-column desktop layout without collision.
            */}
-          <div className="md:hidden h-20 flex items-center justify-between">
+          <div className="lg:hidden h-20 flex items-center justify-between">
             <Brand logoH="h-8" />
             <Hamburger />
           </div>
 
           {/*
-           * ── DESKTOP bar (≥ md) ────────────────────────────────────────
-           * Flex layout: brand left, nav + CTA pushed to the right.
+           * ── DESKTOP bar (≥ lg = 1024px) ───────────────────────────────
+           * CSS Grid: 1fr | auto | 1fr
            *
-           * Brand takes its natural width on the left.
-           * ml-auto on the right group pushes it to the far right.
-           * Nav links come before the CTA inside the right group.
-           * Overlap is impossible: elements are laid out in DOM order,
-           * each starting where the previous one ends.
+           *  1fr  (left)   — brand column. Gets exactly half the space
+           *                  remaining after the nav takes its natural width.
+           *  auto (center) — nav column. Takes its exact content width and
+           *                  sits at the mathematical page center because
+           *                  both flanking columns are equal 1fr units.
+           *  1fr  (right)  — CTA column. Gets exactly the same space as left.
+           *
+           * At lg (1024px) each 1fr ≈ 274px; brand ≈ 250px — always fits.
+           * No overflow, no clipping, no overlap possible.
            */}
-          <div className="hidden md:flex items-center h-20">
-            {/* Brand — natural width, far left */}
-            <Brand logoH="h-12" />
+          <div
+            className="hidden lg:grid items-center h-20"
+            style={{ gridTemplateColumns: "1fr auto 1fr" }}
+          >
+            {/* Col 1 — Brand, left-aligned */}
+            <div className="flex items-center">
+              <Brand logoH="h-12" />
+            </div>
 
-            {/* Nav + CTA — pushed to far right via ml-auto */}
-            <div className="ml-auto flex items-center gap-8">
-              <nav
-                className="flex items-center gap-7 lg:gap-9"
-                aria-label="Main navigation"
-              >
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    aria-current={location === link.href ? "page" : undefined}
-                    className={`text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary ${
-                      location === link.href ? "text-primary" : ""
-                    }`}
-                    data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
+            {/* Col 2 — Navigation, page-centered */}
+            <nav
+              className="flex items-center gap-8 xl:gap-10"
+              aria-label="Main navigation"
+            >
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={location === link.href ? "page" : undefined}
+                  className={`text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary ${
+                    location === link.href ? "text-primary" : ""
+                  }`}
+                  data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
+            {/* Col 3 — CTA, right-aligned */}
+            <div className="flex items-center justify-end">
               <Button
                 className="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={() => setModalOpen(true)}
