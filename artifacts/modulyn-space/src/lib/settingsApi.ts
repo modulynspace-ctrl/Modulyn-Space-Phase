@@ -45,6 +45,7 @@ export const WS_KEYS = [
   "google_maps_url",
   "copyright_text",
   "footer_text",
+  "company_logo_url",
 ] as const;
 
 export type WebsiteSettingKey = (typeof WS_KEYS)[number];

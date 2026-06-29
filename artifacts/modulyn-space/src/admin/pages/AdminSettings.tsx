@@ -275,7 +275,7 @@ const WS_KEYS: string[] = [
   "site_name", "site_phone", "site_email", "site_address",
   "google_maps_url", "whatsapp_number",
   "instagram_url", "facebook_url", "linkedin_url", "youtube_url",
-  "copyright_text", "footer_text",
+  "copyright_text", "footer_text", "company_logo_url",
 ];
 
 function buildDefault(): WsForm {
@@ -287,6 +287,7 @@ function WebsiteSettingsTab() {
   const [loadingData, setLoadingData] = useState(true);
   const [saveState,   setSaveState]   = useState<SaveState>("idle");
   const [errorMsg,    setErrorMsg]    = useState("");
+  const [logoPickerOpen, setLogoPickerOpen] = useState(false);
 
   useEffect(() => {
     fetchWebsiteSettings().then(({ data }) => {
@@ -326,8 +327,65 @@ function WebsiteSettingsTab() {
     );
   }
 
+  function handleLogoSelect(item: MediaItem) {
+    patch("company_logo_url", item.url);
+    setLogoPickerOpen(false);
+  }
+
   return (
     <div className="space-y-8 max-w-2xl">
+
+      {/* ── Company Logo ──────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <Label>Company Logo</Label>
+        <p className="text-xs text-muted-foreground -mt-1">
+          PNG, SVG, or WebP with a transparent background preferred. Displayed in the Navbar alongside the company name.
+        </p>
+
+        {form.company_logo_url ? (
+          <div className="relative group inline-flex">
+            <div className="border border-border rounded-lg overflow-hidden bg-[repeating-conic-gradient(#e5e7eb_0%_25%,#f9fafb_0%_50%)] bg-[length:16px_16px] p-3">
+              <img
+                src={form.company_logo_url}
+                alt="Company logo preview"
+                className="h-11 w-auto object-contain max-w-[240px]"
+              />
+            </div>
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+              <Button size="sm" variant="secondary" onClick={() => setLogoPickerOpen(true)}>
+                Replace
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => patch("company_logo_url", "")}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="gap-2" onClick={() => setLogoPickerOpen(true)}>
+              <ImageIcon className="w-4 h-4" />
+              Pick from Media Library
+            </Button>
+          </div>
+        )}
+
+        {form.company_logo_url && (
+          <button
+            type="button"
+            onClick={() => patch("company_logo_url", "")}
+            className="text-xs text-destructive hover:underline underline-offset-2"
+          >
+            Remove logo — revert to text-only brand
+          </button>
+        )}
+      </div>
+
+      <div className="border-t border-border" />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Company Name */}
         <div className="space-y-2">
@@ -464,6 +522,13 @@ function WebsiteSettingsTab() {
       </div>
 
       <SaveButton state={saveState} errorMsg={errorMsg} onClick={handleSave} />
+
+      <MediaPickerModal
+        open={logoPickerOpen}
+        onClose={() => setLogoPickerOpen(false)}
+        onSelect={handleLogoSelect}
+        title="Choose Company Logo"
+      />
     </div>
   );
 }

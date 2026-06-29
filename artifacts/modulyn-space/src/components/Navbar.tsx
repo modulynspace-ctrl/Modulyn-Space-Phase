@@ -12,6 +12,7 @@ export default function Navbar() {
   const [modalOpen, setModalOpen]           = React.useState(false);
   const { websiteSettings } = useSiteSettings();
   const siteName = websiteSettings.site_name ?? "Modulyn Space";
+  const logoUrl  = websiteSettings.company_logo_url ?? null;
 
   React.useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -41,8 +42,18 @@ export default function Navbar() {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBg}`}>
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="font-serif text-xl md:text-2xl tracking-widest uppercase z-50" data-testid="link-home-logo">
-            {siteName}
+          <Link href="/" className="flex items-center gap-3 z-50 shrink-0" data-testid="link-home-logo">
+            {logoUrl && (
+              <img
+                src={logoUrl}
+                alt={siteName}
+                className="h-9 md:h-11 w-auto object-contain"
+                style={{ imageRendering: "crisp-edges" }}
+              />
+            )}
+            <span className="font-serif text-xl md:text-2xl tracking-widest uppercase">
+              {siteName}
+            </span>
           </Link>
 
           {/* Desktop Nav */}
