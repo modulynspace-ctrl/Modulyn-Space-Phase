@@ -1,0 +1,73 @@
+The previous navbar fixes have not resolved the issue and have actually made it worse.
+
+Do NOT redesign or rewrite the navbar again.
+
+Instead, debug the existing Navbar component and identify the exact root cause.
+
+Current issue:
+- The company logo displays correctly.
+- The company wordmark ("MODULYN SPACE") is being clipped/truncated.
+- The "Home" navigation link begins on top of the wordmark.
+- The navigation is not independent from the brand section.
+- This indicates a layout/container problem, not a spacing problem.
+
+Your task:
+
+1. Inspect the existing Navbar component and identify:
+   - Which parent container controls the brand section.
+   - Which parent container controls the navigation.
+   - Whether the navigation is inside the same flex container as the brand.
+   - Whether the brand container has a fixed width, max-width, overflow:hidden, flex-1, flex-shrink, justify-between, or any other CSS rule causing the wordmark to be clipped.
+
+2. Explain the exact root cause before making changes.
+
+3. Apply the SMALLEST possible fix.
+
+Do NOT:
+- Rewrite the navbar from scratch.
+- Change the visual design.
+- Change fonts.
+- Change colors.
+- Change animations.
+- Change responsive behavior.
+- Add hacks such as negative margins, translateX, absolute positioning, or arbitrary pixel offsets.
+
+Instead:
+- Keep the existing design.
+- Fix only the layout logic that causes the overlap.
+
+The final layout should be:
+
+LEFT
+- Logo
+- Company wordmark
+
+CENTER
+- Home
+- Projects
+- Our Story
+- Modulyn Store
+- Contact
+
+RIGHT
+- Book Consultation
+
+The three sections must be independent.
+
+The navigation must never overlap the company wordmark.
+
+The company wordmark must never be clipped.
+
+After implementing the fix, explain:
+- What was causing the overlap.
+- Which files were modified.
+- Which CSS classes or layout rules were changed.
+- Why this solution fixes the problem.
+
+Do not mark the task complete until the navbar displays correctly with:
+✓ Full company wordmark visible.
+✓ No overlap.
+✓ Navigation centered.
+✓ CTA button aligned right.
+✓ No TypeScript errors.
+✓ No console errors.

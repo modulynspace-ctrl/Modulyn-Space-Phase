@@ -111,7 +111,7 @@ export default function Navbar() {
             style={{ gridTemplateColumns: "1fr max-content 1fr" }}
           >
             {/* Col 1 — Brand */}
-            <div className="flex items-center overflow-hidden">
+            <div className="flex items-center">
               <Brand logoH="h-12" />
             </div>
 
