@@ -1,0 +1,105 @@
+The navbar layout needs to be redesigned for a cleaner, premium appearance.
+
+Current issues:
+- The company logo and wordmark overlap with the navigation links.
+- The wordmark is too large.
+- Navigation spacing is uneven.
+- The navbar no longer looks balanced.
+- The premium luxury appearance has been lost.
+
+Do NOT simply adjust margins. Redesign the navbar layout properly.
+
+Requirements:
+
+1. Brand Section (Left)
+- Keep the logo on the far left.
+- Increase the logo size slightly so it is clearly visible (around 44–48px height on desktop).
+- Reduce the company wordmark to a normal premium size (around 26–30px desktop).
+- Place the wordmark immediately beside the logo with about 12px spacing.
+- Vertically center both logo and wordmark.
+
+2. Navigation (Center)
+Keep these links perfectly centered:
+
+Home
+Projects
+Our Story
+Modulyn Store
+Contact
+
+Requirements:
+- Equal spacing between every navigation item.
+- No overlapping with the brand section.
+- Navigation should always remain visually centered regardless of logo width.
+- Smooth hover animations should remain unchanged.
+
+3. CTA Button (Right)
+Keep the "Book Consultation" button aligned to the far right.
+
+Do not change:
+- Button style
+- Button colour
+- Button size
+- Existing animations
+
+4. Layout
+Use a professional three-section flex layout:
+
+LEFT
+Logo + Wordmark
+
+CENTER
+Navigation Links
+
+RIGHT
+Book Consultation Button
+
+Each section should only occupy the width it actually needs.
+
+The center navigation must always stay centered.
+
+5. Responsive Behaviour
+
+Desktop
+- Everything on one row.
+- No overlap.
+- Premium spacing.
+
+Tablet
+- Slightly reduce spacing and font size.
+- Maintain balance.
+
+Mobile
+- Logo visible.
+- Wordmark scales correctly.
+- Hamburger menu behaviour remains unchanged.
+
+6. Styling
+
+Maintain the existing luxury design language.
+
+Inspired by:
+- Apple
+- Lexus
+- Studio McGee
+- ArchDaily
+
+The navbar should feel elegant, spacious, and premium.
+
+Do NOT modify:
+- Hero section
+- Colours
+- Typography family
+- Animations
+- Other components
+
+Only improve the navbar layout, spacing, sizing, and alignment.
+
+Verification:
+- No overlap between logo, wordmark, and navigation.
+- Navigation perfectly centered.
+- Book Consultation button remains right aligned.
+- Logo is clearly visible.
+- Wordmark is elegant and appropriately sized.
+- Navbar looks balanced on desktop, tablet, and mobile.
+- No TypeScript or console errors.
