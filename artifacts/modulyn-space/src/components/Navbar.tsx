@@ -41,94 +41,110 @@ export default function Navbar() {
     ? "bg-white"
     : "bg-foreground";
 
+  // ── Shared sub-components ─────────────────────────────────────────────────
+
+  const Brand = ({ logoH }: { logoH: string }) => (
+    <Link href="/" className="flex items-center gap-3" data-testid="link-home-logo">
+      {logoUrl && (
+        <img
+          src={logoUrl}
+          alt={siteName}
+          className={`${logoH} w-auto object-contain flex-none`}
+          draggable={false}
+        />
+      )}
+      <span
+        className="font-serif tracking-widest uppercase whitespace-nowrap"
+        style={{ fontSize: logoUrl ? "20px" : "22px" }}
+      >
+        {siteName}
+      </span>
+    </Link>
+  );
+
+  const Hamburger = () => (
+    <button
+      className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
+      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      aria-label="Toggle menu"
+      data-testid="button-mobile-menu"
+    >
+      <span className={`block w-6 h-0.5 transition-transform duration-300 ${hamburgerColor} ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
+      <span className={`block w-6 h-0.5 transition-opacity duration-300 ${hamburgerColor} ${mobileMenuOpen ? "opacity-0" : ""}`} />
+      <span className={`block w-6 h-0.5 transition-transform duration-300 ${hamburgerColor} ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+    </button>
+  );
+
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBg}`}>
-        {/*
-         * CSS Grid: max-content | 1fr | max-content
-         *
-         * max-content (left)  — brand cell is EXACTLY as wide as logo + wordmark.
-         *                        It cannot grow into the center column.
-         * 1fr         (center) — nav cell gets ALL remaining space.
-         *                        Items are justify-content:center inside this cell.
-         * max-content (right)  — CTA / hamburger cell is EXACTLY as wide as its content.
-         *
-         * Overlap is structurally impossible: each column boundary is enforced
-         * by the browser's grid engine. No margins, no transforms, no absolute positioning.
-         *
-         * Works on both mobile and desktop:
-         *   Mobile  — nav cell is empty (hidden); brand left, hamburger right.
-         *   Desktop — all three columns visible and balanced.
-         */}
-        <div
-          className="container mx-auto px-6 h-20 grid items-center"
-          style={{ gridTemplateColumns: "max-content 1fr max-content" }}
-        >
-          {/* ── Col 1 (max-content): Brand ─────────────────────────────── */}
-          <Link
-            href="/"
-            className="flex items-center gap-3"
-            data-testid="link-home-logo"
-          >
-            {logoUrl && (
-              <img
-                src={logoUrl}
-                alt={siteName}
-                className="h-12 w-auto object-contain flex-none"
-                style={{ height: "48px" }}
-                draggable={false}
-              />
-            )}
-            <span
-              className="font-serif tracking-widest uppercase whitespace-nowrap"
-              style={{ fontSize: "22px" }}
-            >
-              {siteName}
-            </span>
-          </Link>
+        <div className="container mx-auto px-6">
 
-          {/* ── Col 2 (1fr): Navigation — centered inside the 1fr cell ─── */}
-          <nav
-            className="hidden md:flex items-center justify-center gap-8"
-            aria-label="Main navigation"
+          {/*
+           * ── MOBILE bar (< md) ─────────────────────────────────────────
+           * Simple flex: brand on left, hamburger on right.
+           * No grid, no nav links visible.
+           */}
+          <div className="md:hidden h-20 flex items-center justify-between">
+            <Brand logoH="h-8" />
+            <Hamburger />
+          </div>
+
+          {/*
+           * ── DESKTOP bar (≥ md) ────────────────────────────────────────
+           * CSS Grid: 1fr | max-content | 1fr
+           *
+           * 1fr   (left)   — brand. Both 1fr columns grow equally from
+           *                   whatever space is left after the nav.
+           * max-content     — nav. Takes its exact natural width.
+           *                   Sits at the mathematical page center because
+           *                   the two 1fr columns are always equal.
+           * 1fr   (right)  — CTA button, right-aligned.
+           *
+           * Overlap is structurally impossible:
+           *   · left 1fr   is hard-bounded on the right by the nav column
+           *   · right 1fr  is hard-bounded on the left by the nav column
+           *   · overflow:hidden on the brand wrapper prevents any bleed
+           */}
+          <div
+            className="hidden md:grid items-center h-20"
+            style={{ gridTemplateColumns: "1fr max-content 1fr" }}
           >
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={location === link.href ? "page" : undefined}
-                className={`text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary ${
-                  location === link.href ? "text-primary" : ""
-                }`}
-                data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
+            {/* Col 1 — Brand */}
+            <div className="flex items-center overflow-hidden">
+              <Brand logoH="h-12" />
+            </div>
+
+            {/* Col 2 — Navigation (page-centered) */}
+            <nav
+              className="flex items-center gap-7 lg:gap-9"
+              aria-label="Main navigation"
+            >
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={location === link.href ? "page" : undefined}
+                  className={`text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary ${
+                    location === link.href ? "text-primary" : ""
+                  }`}
+                  data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Col 3 — CTA */}
+            <div className="flex items-center justify-end">
+              <Button
+                className="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={() => setModalOpen(true)}
+                data-testid="link-nav-cta"
               >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* ── Col 3 (max-content): CTA (desktop) + Hamburger (mobile) ── */}
-          <div className="flex items-center justify-end">
-            {/* Desktop CTA */}
-            <Button
-              className="hidden md:inline-flex rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => setModalOpen(true)}
-              data-testid="link-nav-cta"
-            >
-              Book Consultation
-            </Button>
-
-            {/* Mobile hamburger */}
-            <button
-              className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-              data-testid="button-mobile-menu"
-            >
-              <span className={`block w-6 h-0.5 transition-transform duration-300 ${hamburgerColor} ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
-              <span className={`block w-6 h-0.5 transition-opacity duration-300 ${hamburgerColor} ${mobileMenuOpen ? "opacity-0" : ""}`} />
-              <span className={`block w-6 h-0.5 transition-transform duration-300 ${hamburgerColor} ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-            </button>
+                Book Consultation
+              </Button>
+            </div>
           </div>
         </div>
 

@@ -1,0 +1,106 @@
+The navbar layout is still incorrect.
+
+The issue is **NOT** the logo or the wordmark.
+
+The issue is that the navigation links begin immediately after the brand section instead of being positioned independently, which causes the navigation to overlap the company name.
+
+### Goal
+
+Redesign only the **desktop navbar layout** while preserving the existing design, styling, animations, routing, and responsive behavior.
+
+Do **NOT** redesign the navbar or change its visual identity.
+
+---
+
+## Desired Layout
+
+---
+
+## | Brand |          Navigation          | CTA Button |
+
+### Brand Section (Left)
+
+* Company logo (48px desktop)
+* 12px spacing
+* "MODULYN SPACE" wordmark
+* The brand section should only occupy the width it actually needs.
+* Prevent wrapping using `white-space: nowrap`.
+
+### Navigation Section (Center)
+
+Navigation links:
+
+* Home
+* Projects
+* Our Story
+* Modulyn Store
+* Contact
+
+Requirements:
+
+* The navigation must remain perfectly centered inside the navbar.
+* It must **not** be positioned relative to the width of the logo or wordmark.
+* It must never overlap the brand section.
+* Maintain the existing hover animations and active-state styling.
+
+### CTA Section (Right)
+
+* Keep the "Book Consultation" button fixed on the far right.
+* Do not change its styling or behavior.
+
+---
+
+## Implementation
+
+Do **NOT** use one large flex row containing all three sections.
+
+Instead, create three independent sections.
+
+Use CSS Grid (or an equivalent layout) so the left, center, and right sections are independent.
+
+The center navigation should always stay visually centered, regardless of the width of the logo or wordmark.
+
+Do **NOT** use:
+
+* Negative margins
+* `translateX`
+* Absolute positioning hacks
+* Hardcoded pixel offsets
+
+The layout should solve itself naturally using proper CSS layout techniques.
+
+---
+
+## Preserve
+
+Do **NOT** change:
+
+* Colors
+* Fonts
+* Typography
+* Navbar height
+* Button styling
+* Hover animations
+* Mobile menu
+* Tablet behavior
+* Existing routes
+* Existing functionality
+
+Only fix the desktop navbar alignment and spacing.
+
+---
+
+## Verification
+
+After making the changes, verify that:
+
+* Logo and wordmark stay together.
+* Navigation remains perfectly centered.
+* Navigation never overlaps the wordmark.
+* CTA button remains aligned to the far right.
+* Navbar looks balanced on desktop.
+* Tablet and mobile behavior remain unchanged.
+* No TypeScript errors.
+* No console errors.
+
+Before marking the task complete, compare the final navbar against the current version and confirm that the overlap issue has been eliminated.
