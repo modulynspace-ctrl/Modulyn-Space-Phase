@@ -1,0 +1,111 @@
+The navbar layout is still incorrect.
+
+The previous implementation did NOT solve the overlap.
+
+The root problem is that the Logo + Wordmark section is consuming more width than allocated, causing the navigation links to render on top of the wordmark.
+
+Do NOT try to fix this with margins, padding, transforms, or absolute positioning.
+
+Redesign the navbar using a proper CSS layout.
+
+Requirements:
+
+1. Use CSS Grid instead of Flex.
+
+Desktop layout:
+
+---------------------------------------------------------
+| Logo + Wordmark | Center Navigation | CTA Button |
+---------------------------------------------------------
+
+Grid columns:
+
+max-content    1fr    max-content
+
+The left section should only take the width required by the logo and wordmark.
+
+The center section must occupy the remaining space and center the navigation horizontally.
+
+The CTA button should stay aligned to the far right.
+
+2. Brand section
+
+Logo:
+- Height: 48px
+- Preserve aspect ratio
+
+Wordmark:
+- Font size: 22px desktop
+- Font weight should match the existing luxury branding
+- Add 12px spacing from the logo
+- Prevent wrapping.
+
+Use:
+
+white-space: nowrap;
+
+3. Navigation
+
+Navigation should be perfectly centered.
+
+Links:
+
+Home
+Projects
+Our Story
+Modulyn Store
+Contact
+
+Requirements:
+
+- Equal spacing (32–40px)
+- Never overlap the logo
+- Never overlap the CTA button
+- Keep current hover animations
+
+4. If there isn't enough horizontal space,
+
+Reduce navigation gap slightly.
+
+Do NOT allow overlapping.
+
+5. If the viewport becomes too small,
+
+Hide the desktop navigation and switch to the existing mobile hamburger menu.
+
+Never squeeze items together.
+
+6. Important
+
+The logo and wordmark must NEVER overlap with the navigation.
+
+The navigation must NEVER overlap with the CTA.
+
+Do not use negative margins.
+
+Do not use translateX hacks.
+
+Do not use position:absolute to force alignment.
+
+The layout should naturally adapt using CSS Grid.
+
+7. Preserve
+
+- Current colors
+- Current fonts
+- Current animations
+- Current navbar height
+- Current button design
+- Existing responsive behavior
+
+Do not modify any other component.
+
+Verification:
+
+✓ Logo and wordmark fit naturally.
+✓ Navigation remains perfectly centered.
+✓ CTA stays right aligned.
+✓ Zero overlap on desktop.
+✓ Zero overlap on tablet.
+✓ Mobile menu unchanged.
+✓ No TypeScript or console errors.

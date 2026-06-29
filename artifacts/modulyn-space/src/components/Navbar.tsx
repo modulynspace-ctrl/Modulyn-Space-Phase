@@ -45,43 +45,51 @@ export default function Navbar() {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBg}`}>
         {/*
-         * Three-column flex layout — the same technique used by Apple, Lexus, Studio McGee:
+         * CSS Grid: max-content | 1fr | max-content
          *
-         *  ┌──────────────────┬─────────────────────┬──────────────────┐
-         *  │  LEFT  (flex-1)  │  CENTER  (flex-none) │  RIGHT  (flex-1) │
-         *  │  Brand           │  Nav links           │  CTA / Hamburger │
-         *  └──────────────────┴─────────────────────┴──────────────────┘
+         * max-content (left)  — brand cell is EXACTLY as wide as logo + wordmark.
+         *                        It cannot grow into the center column.
+         * 1fr         (center) — nav cell gets ALL remaining space.
+         *                        Items are justify-content:center inside this cell.
+         * max-content (right)  — CTA / hamburger cell is EXACTLY as wide as its content.
          *
-         * Because LEFT and RIGHT are both `flex: 1`, they grow equally.
-         * The CENTER takes only its natural width and sits perfectly in the middle
-         * regardless of how wide the brand is.
+         * Overlap is structurally impossible: each column boundary is enforced
+         * by the browser's grid engine. No margins, no transforms, no absolute positioning.
+         *
+         * Works on both mobile and desktop:
+         *   Mobile  — nav cell is empty (hidden); brand left, hamburger right.
+         *   Desktop — all three columns visible and balanced.
          */}
-        <div className="container mx-auto px-6 h-20 flex items-center">
-
-          {/* ── LEFT: Brand (logo + wordmark) ──────────────────────────── */}
-          <div className="flex-1 min-w-0 flex items-center">
-            <Link
-              href="/"
-              className="flex items-center gap-3"
-              data-testid="link-home-logo"
+        <div
+          className="container mx-auto px-6 h-20 grid items-center"
+          style={{ gridTemplateColumns: "max-content 1fr max-content" }}
+        >
+          {/* ── Col 1 (max-content): Brand ─────────────────────────────── */}
+          <Link
+            href="/"
+            className="flex items-center gap-3"
+            data-testid="link-home-logo"
+          >
+            {logoUrl && (
+              <img
+                src={logoUrl}
+                alt={siteName}
+                className="h-12 w-auto object-contain flex-none"
+                style={{ height: "48px" }}
+                draggable={false}
+              />
+            )}
+            <span
+              className="font-serif tracking-widest uppercase whitespace-nowrap"
+              style={{ fontSize: "22px" }}
             >
-              {logoUrl && (
-                <img
-                  src={logoUrl}
-                  alt={siteName}
-                  className="flex-none h-8 md:h-10 lg:h-12 w-auto object-contain"
-                  draggable={false}
-                />
-              )}
-              <span className="font-serif text-lg md:text-xl lg:text-2xl tracking-widest uppercase whitespace-nowrap">
-                {siteName}
-              </span>
-            </Link>
-          </div>
+              {siteName}
+            </span>
+          </Link>
 
-          {/* ── CENTER: Nav links (desktop only) ────────────────────────── */}
+          {/* ── Col 2 (1fr): Navigation — centered inside the 1fr cell ─── */}
           <nav
-            className="hidden md:flex flex-none items-center gap-6 lg:gap-8"
+            className="hidden md:flex items-center justify-center gap-8"
             aria-label="Main navigation"
           >
             {navLinks.map((link) => (
@@ -99,8 +107,8 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* ── RIGHT: CTA (desktop) + Hamburger (mobile) ──────────────── */}
-          <div className="flex-1 min-w-0 flex items-center justify-end">
+          {/* ── Col 3 (max-content): CTA (desktop) + Hamburger (mobile) ── */}
+          <div className="flex items-center justify-end">
             {/* Desktop CTA */}
             <Button
               className="hidden md:inline-flex rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
@@ -124,7 +132,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* ── Mobile full-screen menu (unchanged) ─────────────────────── */}
+        {/* ── Mobile full-screen menu — unchanged ─────────────────────── */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
