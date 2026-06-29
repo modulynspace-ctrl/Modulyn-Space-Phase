@@ -20,7 +20,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   React.useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);
@@ -38,11 +37,28 @@ export default function Navbar() {
     ? "bg-transparent text-white border-transparent"
     : "bg-white/90 backdrop-blur-md text-foreground border-border/40 shadow-sm";
 
+  const hamburgerColor = isHomepage && !isScrolled && !mobileMenuOpen
+    ? "bg-white"
+    : "bg-foreground";
+
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBg}`}>
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 z-50 shrink-0" data-testid="link-home-logo">
+        {/*
+          Three-section layout:
+          • Brand (left)  — shrink-0, z-10 so it sits above the centered nav layer
+          • Nav links     — position:absolute, inset-x-0, justify-center → truly centered
+                            pointer-events-none on wrapper, pointer-events-auto on each link
+          • Right actions — shrink-0, z-10 (CTA desktop + hamburger mobile)
+        */}
+        <div className="container mx-auto px-6 h-20 relative flex items-center justify-between">
+
+          {/* ── Brand: far left ─────────────────────────────────────────── */}
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 z-10 shrink-0"
+            data-testid="link-home-logo"
+          >
             {logoUrl && (
               <img
                 src={logoUrl}
@@ -56,44 +72,51 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* ── Desktop nav links: absolutely centered ──────────────────── */}
+          <nav
+            className="hidden md:flex absolute inset-x-0 items-center justify-center gap-8 pointer-events-none"
+            aria-label="Main navigation"
+          >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 aria-current={location === link.href ? "page" : undefined}
-                className={`text-sm font-medium tracking-wide transition-colors hover:text-primary ${
+                className={`pointer-events-auto text-sm font-medium tracking-wide transition-colors hover:text-primary ${
                   location === link.href ? "text-primary" : ""
                 }`}
-                data-testid={`link-nav-${link.label.toLowerCase().replace(' ', '-')}`}
+                data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
               >
                 {link.label}
               </Link>
             ))}
+          </nav>
+
+          {/* ── Right actions: CTA (desktop) + hamburger (mobile) ────────── */}
+          <div className="flex items-center z-10 shrink-0">
             <Button
-              className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm"
+              className="hidden md:inline-flex rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => setModalOpen(true)}
               data-testid="link-nav-cta"
             >
               Book Consultation
             </Button>
-          </nav>
 
-          {/* Mobile Toggle */}
-          <button
-            className="md:hidden z-50 flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-            data-testid="button-mobile-menu"
-          >
-            <span className={`block w-6 h-0.5 transition-transform duration-300 ${isHomepage && !isScrolled && !mobileMenuOpen ? 'bg-white' : 'bg-foreground'} ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-            <span className={`block w-6 h-0.5 transition-opacity duration-300 ${isHomepage && !isScrolled && !mobileMenuOpen ? 'bg-white' : 'bg-foreground'} ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-            <span className={`block w-6 h-0.5 transition-transform duration-300 ${isHomepage && !isScrolled && !mobileMenuOpen ? 'bg-white' : 'bg-foreground'} ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-          </button>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+              data-testid="button-mobile-menu"
+            >
+              <span className={`block w-6 h-0.5 transition-transform duration-300 ${hamburgerColor} ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
+              <span className={`block w-6 h-0.5 transition-opacity duration-300 ${hamburgerColor} ${mobileMenuOpen ? "opacity-0" : ""}`} />
+              <span className={`block w-6 h-0.5 transition-transform duration-300 ${hamburgerColor} ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile full-screen menu — unchanged */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -112,14 +135,14 @@ export default function Navbar() {
                     className={`text-2xl font-serif transition-colors hover:text-primary ${
                       location === link.href ? "text-primary" : "text-foreground"
                     }`}
-                    data-testid={`link-mobile-nav-${link.label.toLowerCase().replace(' ', '-')}`}
+                    data-testid={`link-mobile-nav-${link.label.toLowerCase().replace(" ", "-")}`}
                   >
                     {link.label}
                   </Link>
                 ))}
                 <Button
                   size="lg"
-                  className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90 mt-4 rounded-sm w-full max-w-[200px]"
+                  className="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 mt-4 w-full max-w-[200px]"
                   onClick={() => { setMobileMenuOpen(false); setModalOpen(true); }}
                   data-testid="link-mobile-nav-cta"
                 >
@@ -131,7 +154,6 @@ export default function Navbar() {
         </AnimatePresence>
       </header>
 
-      {/* Consultation booking modal — lives here so it's available site-wide */}
       <ConsultationBookingModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </>
   );
