@@ -54,10 +54,11 @@ export default function Navbar() {
         />
       )}
       <span
-        className="font-serif tracking-widest uppercase whitespace-nowrap"
-        style={{ fontSize: logoUrl ? "20px" : "22px" }}
+        className="font-serif tracking-widest uppercase leading-tight flex flex-col"
+        style={{ fontSize: logoUrl ? "18px" : "20px" }}
       >
-        {siteName}
+        <span>{siteName.split(" ")[0]}</span>
+        <span>{siteName.split(" ").slice(1).join(" ")}</span>
       </span>
     </Link>
   );
