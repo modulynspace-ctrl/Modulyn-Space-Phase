@@ -92,51 +92,39 @@ export default function Navbar() {
 
           {/*
            * ── DESKTOP bar (≥ md) ────────────────────────────────────────
-           * CSS Grid: 1fr | max-content | 1fr
+           * Flex layout: brand left, nav + CTA pushed to the right.
            *
-           * 1fr   (left)   — brand. Both 1fr columns grow equally from
-           *                   whatever space is left after the nav.
-           * max-content     — nav. Takes its exact natural width.
-           *                   Sits at the mathematical page center because
-           *                   the two 1fr columns are always equal.
-           * 1fr   (right)  — CTA button, right-aligned.
-           *
-           * Overlap is structurally impossible:
-           *   · left 1fr   is hard-bounded on the right by the nav column
-           *   · right 1fr  is hard-bounded on the left by the nav column
-           *   · overflow:hidden on the brand wrapper prevents any bleed
+           * Brand takes its natural width on the left.
+           * ml-auto on the right group pushes it to the far right.
+           * Nav links come before the CTA inside the right group.
+           * Overlap is impossible: elements are laid out in DOM order,
+           * each starting where the previous one ends.
            */}
-          <div
-            className="hidden md:grid items-center h-20"
-            style={{ gridTemplateColumns: "1fr max-content 1fr" }}
-          >
-            {/* Col 1 — Brand */}
-            <div className="flex items-center">
-              <Brand logoH="h-12" />
-            </div>
+          <div className="hidden md:flex items-center h-20">
+            {/* Brand — natural width, far left */}
+            <Brand logoH="h-12" />
 
-            {/* Col 2 — Navigation (page-centered) */}
-            <nav
-              className="flex items-center gap-7 lg:gap-9"
-              aria-label="Main navigation"
-            >
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  aria-current={location === link.href ? "page" : undefined}
-                  className={`text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary ${
-                    location === link.href ? "text-primary" : ""
-                  }`}
-                  data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+            {/* Nav + CTA — pushed to far right via ml-auto */}
+            <div className="ml-auto flex items-center gap-8">
+              <nav
+                className="flex items-center gap-7 lg:gap-9"
+                aria-label="Main navigation"
+              >
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={location === link.href ? "page" : undefined}
+                    className={`text-sm font-medium tracking-wide whitespace-nowrap transition-colors hover:text-primary ${
+                      location === link.href ? "text-primary" : ""
+                    }`}
+                    data-testid={`link-nav-${link.label.toLowerCase().replace(" ", "-")}`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
 
-            {/* Col 3 — CTA */}
-            <div className="flex items-center justify-end">
               <Button
                 className="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={() => setModalOpen(true)}
