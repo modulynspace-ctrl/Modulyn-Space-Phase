@@ -53,7 +53,7 @@ export default function Home() {
   const [testimonials,   setTestimonials]   = useState<Testimonial[]>([]);
   const [faqs,           setFaqs]           = useState<FAQ[]>([]);
   const [brands,         setBrands]         = useState<Brand[]>([]);
-  //const [services, setServices] = useState([]);    //manually added
+  //const [services, setServices] = useState([]);   
   const [services, setServices] = useState<Service[]>([]);  //manually added
   
   useEffect(() => {
