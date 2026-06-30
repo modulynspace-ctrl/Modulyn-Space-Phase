@@ -250,7 +250,7 @@ export default function Home() {
               { icon: Briefcase, title: "Commercial", desc: "Offices and retail environments." },
               { icon: Sofa, title: "Furniture", desc: "Custom designed luxury pieces." },
               { icon: LampCeiling, title: "False Ceiling", desc: "Architectural lighting integration." },
-            ].map((service, idx) => ({/* Dynamic Services from Admin */}
+            ].map((service, idx) => (
               <motion.div
                 key={service.title}
                 initial={{ opacity: 0, y: 20 }}
