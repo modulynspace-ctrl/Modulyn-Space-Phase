@@ -52,7 +52,8 @@ export default function Home() {
   const [testimonials,   setTestimonials]   = useState<Testimonial[]>([]);
   const [faqs,           setFaqs]           = useState<FAQ[]>([]);
   const [brands,         setBrands]         = useState<Brand[]>([]);
-
+  const [services, setServices] = useState([]);  //added manuvally
+  
   useEffect(() => {
     document.title = "Modulyn Space | Premium Interior Design in Karnataka";
   }, []);
