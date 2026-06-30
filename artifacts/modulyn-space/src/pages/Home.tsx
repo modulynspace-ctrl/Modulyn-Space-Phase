@@ -32,6 +32,7 @@ import { fetchPublicTestimonials, Testimonial } from "@/lib/testimonialsApi";
 import { fetchPublicFAQs, FAQ } from "@/lib/faqsApi";
 import { fetchPublicBrands, Brand } from "@/lib/brandsApi";
 import { useSiteSettings } from "@/lib/siteSettingsContext";
+import { fetchPublicServices, Service } from "@/lib/servicesApi";  //manually added
 
 interface FeaturedProject {
   title: string;
@@ -52,7 +53,8 @@ export default function Home() {
   const [testimonials,   setTestimonials]   = useState<Testimonial[]>([]);
   const [faqs,           setFaqs]           = useState<FAQ[]>([]);
   const [brands,         setBrands]         = useState<Brand[]>([]);
-  const [services, setServices] = useState([]);  //added manuvally
+  //const [services, setServices] = useState([]);    //manually added
+  const [services, setServices] = useState<Service[]>([]);  //manually added
   
   useEffect(() => {
     document.title = "Modulyn Space | Premium Interior Design in Karnataka";
@@ -62,6 +64,7 @@ export default function Home() {
     fetchPublicTestimonials().then(({ data }) => setTestimonials(data));
     fetchPublicFAQs().then(({ data }) => setFaqs(data));
     fetchPublicBrands().then(({ data }) => setBrands(data));
+    fetchPublicServices().then(({ data }) => setServices(data));  //manually added
   }, []);
 
   useEffect(() => {
@@ -247,7 +250,7 @@ export default function Home() {
               { icon: Briefcase, title: "Commercial", desc: "Offices and retail environments." },
               { icon: Sofa, title: "Furniture", desc: "Custom designed luxury pieces." },
               { icon: LampCeiling, title: "False Ceiling", desc: "Architectural lighting integration." },
-            ].map((service, idx) => (
+            ].map((service, idx) => (//manully added
               <motion.div
                 key={service.title}
                 initial={{ opacity: 0, y: 20 }}
@@ -260,6 +263,29 @@ export default function Home() {
                 <service.icon className="w-10 h-10 text-primary mb-6 stroke-[1.5]" />
                 <h3 className="font-serif text-xl mb-3">{service.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{service.desc}</p>
+              </motion.div>
+                        ))}
+// manuvally added
+            {/* Dynamic Services from Admin */}
+            {services.map((service, idx) => (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: (idx + 8) * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                className="bg-card border border-border p-8 hover:shadow-lg transition-all duration-300 cursor-default"
+              >
+                <HomeIcon className="w-10 h-10 text-primary mb-6 stroke-[1.5]" />
+
+                <h3 className="font-serif text-xl mb-3">
+                  {service.title}
+                </h3>
+
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {service.short_description ?? service.description}
+                </p>
               </motion.div>
             ))}
           </div>
